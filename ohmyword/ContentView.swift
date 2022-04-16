@@ -10,15 +10,13 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var word = ["A", "D", "I", "E", "U"]
+    @State private var winningWord = ["A", "D", "I", "E", "U"]
     
-    @State private var try1 = ["", "", "", "", ""]
-    @State private var try2 = ["", "", "", "", ""]
-    @State private var try3 = ["", "", "", "", ""]
-    @State private var try4 = ["", "", "", "", ""]
-    @State private var try5 = ["", "", "", "", ""]
-    @State private var try6 = ["", "", "", "", ""]
     @State private var bgColor:Color = Color.white
+    
+    @State private var row1Letters = ["Q", "W", "E", "R","T", "Y", "U", "I", "O", "P"]
+    @State private var row2Letters = ["A", "S", "D", "F", "G", "H", "J", "K", "L"]
+    @State private var row3Letters = ["Z", "X", "C", "V", "B", "N", "M"]
     
     @State private var color2D:[[Color]] = [ [Color.gray, Color.gray, Color.gray,Color.gray, Color.gray],
                 [Color.gray, Color.gray, Color.gray,Color.gray, Color.gray],
@@ -27,12 +25,12 @@ struct ContentView: View {
                 [Color.gray, Color.gray, Color.gray,Color.gray, Color.gray],
                 [Color.gray, Color.gray, Color.gray,Color.gray, Color.gray]]
     
-    @State private var letters2D:[[String]] = [ ["1", " ", " "," ", " "],
-                                                ["2", " ", " "," ", " "],
-                                                ["3", " ", " "," ", " "],
-                                                ["4", " ", " "," ", " "],
-                                                ["5", " ", " "," ", " "],
-                                                ["6", " ", " "," ", " "]]
+    @State private var letters2D:[[String]] = [ [" ", " ", " "," ", " "],
+                                                [" ", " ", " "," ", " "],
+                                                [" ", " ", " "," ", " "],
+                                                [" ", " ", " "," ", " "],
+                                                [" ", " ", " "," ", " "],
+                                                [" ", " ", " "," ", " "]]
     
     @State private var currentRow = 0
     @State private var currentColumn = 0
@@ -40,7 +38,6 @@ struct ContentView: View {
     private var gridItemLayout = [GridItem(.fixed(60), spacing: 5), GridItem(.fixed(60), spacing: 5),
                                    GridItem(.fixed(60), spacing: 5), GridItem(.fixed(60), spacing: 5),
                                   GridItem(.fixed(60), spacing: 5)]
-    
     
     private var letters10ItemLayout = [GridItem(.fixed(40), spacing: 1),
                                       GridItem(.fixed(40), spacing: 1),
@@ -71,9 +68,12 @@ struct ContentView: View {
                                       GridItem(.fixed(40), spacing: 1),
                                       GridItem(.fixed(40), spacing: 1)]
     
+    private var controlButtonItemLayout = [GridItem( spacing: 1),
+                                           GridItem( spacing: 1)]
     
-    private var colors: [Color] = [.yellow, .purple, .green, .white, .gray]
-    
+    //-------------------------------------------------------
+    // letter button style
+    //-------------------------------------------------------
     struct RoundedRectangleButtonStyle: ButtonStyle {
       func makeBody(configuration: Configuration) -> some View {
         Button(action: {}, label: {
@@ -93,6 +93,31 @@ struct ContentView: View {
       }
     }
     
+    //-------------------------------------------------------
+    // control button style
+    //-------------------------------------------------------
+    struct ControlButtonStyle: ButtonStyle {
+      func makeBody(configuration: Configuration) -> some View {
+        Button(action: {}, label: {
+          HStack {
+            configuration.label.foregroundColor(.black)
+          }
+        })
+        // 👇🏻 makes all taps go to the original button
+        .frame(width: 80 , height: 20, alignment: .center)
+
+        .allowsHitTesting(false)
+        .padding(10)
+        .background(Color.gray.cornerRadius(8))
+        .font(.system(size: 14, design: .default))
+        
+     //   .scaleEffect(configuration.isPressed ? 0.95 : 1)
+      }
+    }
+    
+    //-------------------------------------------------------
+    // add a letter when the user types it
+    //-------------------------------------------------------
     func addLetter(letterToAdd: String) {
         letters2D[currentRow][currentColumn] = letterToAdd
         
@@ -115,260 +140,166 @@ struct ContentView: View {
         }
     }
     
+    //-------------------------------------------------------
+    // check word and set colors
+    //-------------------------------------------------------
+    func checkWordAndSetColors() {
+        var n:Int = 0
+        var i:Int = 0
+        while(i<5)
+        {
+            if (letters2D[currentRow][i] == winningWord[i])
+            {
+                color2D[currentRow][i] = Color.green
+            }
+            i = i + 1
+        }
+        i = 0
+        while(i<5)
+        {
+            n = 0
+            while(n<5)
+            {
+                    if (letters2D[currentRow][i] == winningWord[n])
+                    {
+                        if (i != n) {
+                            color2D[currentRow][i] = Color.yellow
+                        }
+                    }
+                n = n + 1
+            }
+            i = i + 1
+        }
+    }
     
+    //-------------------------------------------------------
+    // Build the main view
+    //-------------------------------------------------------
     var body: some View {
         
-            LazyVGrid(columns: gridItemLayout, spacing: 5) {
-                ForEach(Array(letters2D[0].enumerated()), id: \.offset) { index, letter in
+        VStack(spacing: 30) {
+            VStack(spacing: 10) {
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[0].enumerated()), id: \.offset) { index, letter in
+                            Text(letter)
+                                .font(.system(size: 18))
+                                .frame(width: 60, height: 60)
+                                .background(color2D[0][index])
+                                .cornerRadius(10)
+                                .multilineTextAlignment(.center)
+                    }
+                }
+        
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[1].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
                             .font(.system(size: 18))
                             .frame(width: 60, height: 60)
-                            .background(color2D[0][index])
+                            .background(color2D[1][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                    }
+                }
+        
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[2].enumerated()), id: \.offset) { index, letter in
+                        Text(letter)
+                            .font(.system(size: 18))
+                            .frame(width: 60, height: 60)
+                            .background(color2D[2][index])
+                            .cornerRadius(10)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+        
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[3].enumerated()), id: \.offset) { index, letter in
+                        Text(letter)
+                            .font(.system(size: 18))
+                            .frame(width: 60, height: 60)
+                            .background(color2D[3][index])
+                            .cornerRadius(10)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[4].enumerated()), id: \.offset) { index, letter in
+                        Text(letter)
+                            .font(.system(size: 18))
+                            .frame(width: 60, height: 60)
+                            .background(color2D[4][index])
+                            .cornerRadius(10)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                
+                LazyVGrid(columns: gridItemLayout, spacing: 5) {
+                    ForEach(Array(letters2D[5].enumerated()), id: \.offset) { index, letter in
+                        Text(letter)
+                            .font(.system(size: 18))
+                            .frame(width: 60, height: 60)
+                            .background(color2D[5][index])
+                            .cornerRadius(10)
+                            .multilineTextAlignment(.center)
+                    }
                 }
             }
-        
-            LazyVGrid(columns: gridItemLayout, spacing: 5) {
-                ForEach(Array(letters2D[1].enumerated()), id: \.offset) { index, letter in
-                    Text(letter)
-                        .font(.system(size: 18))
-                        .frame(width: 60, height: 60)
-                        .background(color2D[1][index])
-                        .cornerRadius(10)
-                        .multilineTextAlignment(.center)
-                }
-            }
-        
-            LazyVGrid(columns: gridItemLayout, spacing: 5) {
-                ForEach(Array(letters2D[2].enumerated()), id: \.offset) { index, letter in
-                    Text(letter)
-                        .font(.system(size: 18))
-                        .frame(width: 60, height: 60)
-                        .background(color2D[2][index])
-                        .cornerRadius(10)
-                        .multilineTextAlignment(.center)
-                }
-            }
-        
-        LazyVGrid(columns: gridItemLayout, spacing: 5) {
-            ForEach(Array(letters2D[3].enumerated()), id: \.offset) { index, letter in
-                Text(letter)
-                    .font(.system(size: 18))
-                    .frame(width: 60, height: 60)
-                    .background(color2D[3][index])
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.center)
-            }
-        }
-        
-        LazyVGrid(columns: gridItemLayout, spacing: 5) {
-            ForEach(Array(letters2D[4].enumerated()), id: \.offset) { index, letter in
-                Text(letter)
-                    .font(.system(size: 18))
-                    .frame(width: 60, height: 60)
-                    .background(color2D[4][index])
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.center)
-            }
-        }
-        
-        LazyVGrid(columns: gridItemLayout, spacing: 5) {
-            ForEach(Array(letters2D[5].enumerated()), id: \.offset) { index, letter in
-                Text(letter)
-                    .font(.system(size: 18))
-                    .frame(width: 60, height: 60)
-                    .background(color2D[5][index])
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.center)
-            }
-        }
         
        
+            VStack(spacing: 8) {
         
-        Group {
-        LazyVGrid(columns: letters10ItemLayout, spacing: 10) {
-            Button("Q") {
-              addLetter(letterToAdd: "Q")
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            .frame(width: 40 , height: 40, alignment: .center)
-            
-            Button("W") {
-                addLetter(letterToAdd: "W")
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("E") {
-                addLetter(letterToAdd: "E")
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("R") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("T") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("Y") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("U") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("I") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("O") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("P") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-        }
-        
-        LazyVGrid(columns: letters9ItemLayout, spacing: 10) {
-            Button("A") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            .frame(width: 40 , height: 40, alignment: .center)
-            
-            Button("S") {
+                LazyVGrid(columns: letters10ItemLayout, spacing: 10) {
+                    ForEach(Array(row1Letters.enumerated()), id: \.offset) { index, letter in
+                        Button(letter)
+                        {
+                            addLetter(letterToAdd: letter)
+                        }
+                        .buttonStyle(RoundedRectangleButtonStyle())
+                    }
+                    
+                }
                 
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("D") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("F") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("G") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("H") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("J") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("K") {
-              // button tapped
-              
-            }
-            .frame(width: 40 , height: 40, alignment: .center)
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("L") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-        }
-        
-        LazyVGrid(columns: letters7ItemLayout, spacing: 10) {
-            Button("Z") {
-              letters2D[0][0] = "Z"
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            .frame(width: 40 , height: 40, alignment: .center)
-            
-            Button("X") {
+                LazyVGrid(columns: letters9ItemLayout, spacing: 10) {
+                    ForEach(Array(row2Letters.enumerated()), id: \.offset) { index, letter in
+                        Button(letter)
+                        {
+                            addLetter(letterToAdd: letter)
+                        }
+                        .buttonStyle(RoundedRectangleButtonStyle())
+                    }
+                   
+                }
                 
-              // button tapped
-              
+                LazyVGrid(columns: letters7ItemLayout, spacing: 10) {
+                    ForEach(Array(row3Letters.enumerated()), id: \.offset) { index, letter in
+                        Button(letter)
+                        {
+                            addLetter(letterToAdd: letter)
+                        }
+                        .buttonStyle(RoundedRectangleButtonStyle())
+                    }
+                   
+                }
             }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("C") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("V") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("B") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("N") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-            Button("M") {
-              // button tapped
-              
-            }
-            .buttonStyle(RoundedRectangleButtonStyle())
-            
-        }
         
-    }
-        
-        Button("Button title") {
-            print("Button tapped!")
-            color2D[2][3] = Color.blue
-            color2D[3][3] = Color.yellow
-            letters2D[2][3] = "X"
-            letters2D[3][3] = "Y"
-        }
+            LazyVGrid(columns: controlButtonItemLayout, spacing: 10) {
+                Button("Enter") {
+                    if (currentColumn == 4)
+                    {
+                        checkWordAndSetColors()
+                        currentRow = currentRow + 1
+                        currentColumn = 0
+                    }
+                }
+                .buttonStyle(ControlButtonStyle())
             
+                Button("Delete") {
+              
+                }
+                .buttonStyle(ControlButtonStyle())
+            }
+        }
     }
 }
 
