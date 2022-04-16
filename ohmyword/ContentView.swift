@@ -95,14 +95,22 @@ struct ContentView: View {
     
     func addLetter(letterToAdd: String) {
         letters2D[currentRow][currentColumn] = letterToAdd
-        currentColumn = currentColumn + 1
         
-        if (currentColumn > 4) {
-            currentColumn = 0
-            currentRow = currentRow + 1
+        if (currentColumn == 4)
+        {
             
-            if (currentRow > 5) {
-                currentRow = 0
+        }
+        else
+        {
+            currentColumn = currentColumn + 1
+        
+            if (currentColumn > 4) {
+                currentColumn = 0
+                currentRow = currentRow + 1
+            
+                if (currentRow > 5) {
+                    currentRow = 0
+                }
             }
         }
     }
