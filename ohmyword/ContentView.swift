@@ -235,7 +235,6 @@ struct ContentView: View {
                                 .background(color2D[0][index])
                                 .cornerRadius(10)
                                 .multilineTextAlignment(.center)
-                                .fontWeight(.bold)
                     }
                 }
         
@@ -247,7 +246,6 @@ struct ContentView: View {
                             .background(color2D[1][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
-                            .fontWeight(.bold)
                     }
                 }
         
@@ -259,7 +257,6 @@ struct ContentView: View {
                             .background(color2D[2][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
-                            .fontWeight(.bold)
                     }
                 }
         
@@ -271,7 +268,6 @@ struct ContentView: View {
                             .background(color2D[3][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
-                            .fontWeight(.bold)
                     }
                 }
                 
@@ -283,7 +279,6 @@ struct ContentView: View {
                             .background(color2D[4][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
-                            .fontWeight(.bold)
                     }
                 }
                 
@@ -295,7 +290,6 @@ struct ContentView: View {
                             .background(color2D[5][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
-                            .fontWeight(.bold)
                     }
                 }
             }
