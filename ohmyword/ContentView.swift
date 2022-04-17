@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
+    
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common)
+    @State private var timerSubscription: Cancellable?
+
     @State private var showAlert = false
     
     @State private var userWon = false
@@ -186,6 +191,16 @@ struct ContentView: View {
             i = i + 1
         }
         
+        i = 0
+        while(i<5)
+        {
+            if (color2D[currentRow][i] == Color.gray)
+            {
+                color2D[currentRow][i] = Color.blue
+            }
+            i = i + 1
+        }
+        
         return greenCount
     }
     
@@ -217,7 +232,7 @@ struct ContentView: View {
     // Build the main view
     //-------------------------------------------------------
     var body: some View {
-        
+
         VStack(spacing: 30) {
             VStack(spacing: 10) {
                 
@@ -346,16 +361,14 @@ struct ContentView: View {
                     if (greenCount == 5)
                     {
                         userWon = true
-                        showAlert = true
+                        timerSubscription = timer.connect()
                         wonInTries = currentRow
-                        resetGame()
                     }
                     else {
                         if (currentRow == 6) {
                             userWon = false
                             wrongArray = winningWord
-                            showAlert = true
-                            resetGame()
+                            timerSubscription = timer.connect()
                         }
                     }
                 }
@@ -388,6 +401,13 @@ struct ContentView: View {
                 LoseView(winningWord: wrongArray[0] + wrongArray[1] + wrongArray[2] + wrongArray[3] +
                          wrongArray[4])
             }
+        }
+        .onReceive(timer) { input in
+            showAlert = true
+            timerSubscription?.cancel()
+            timerSubscription = nil
+            timer = Timer.publish(every: 1, on: .main, in: .common)
+            resetGame()
         }
     }
 }
