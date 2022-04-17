@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var showAlert = false
+    @State private var showAlert = false
     
-    @State var userWon = false
+    @State private var userWon = false
+    @State private var wonInTries:Int = 0
     
-    var resetBoard = false
-    
-    
-    @State private var winningWord = ["A", "D", "I", "E", "U"]
+    @State private var winningWord = getNextWordArray() // ["A", "D", "I", "E", "U"]
     
     @State private var bgColor:Color = Color.white
     
@@ -75,6 +73,14 @@ struct ContentView: View {
     
     private var controlButtonItemLayout = [GridItem( spacing: 1),
                                            GridItem( spacing: 1)]
+    
+    
+    //-------------------------------------------------------
+    // init
+    //-------------------------------------------------------
+    init() {
+        self.resetGame()
+    }
     
     //-------------------------------------------------------
     // letter button style
@@ -190,6 +196,9 @@ struct ContentView: View {
         var i:Int = 0
         currentRow = 0
         currentColumn = 0
+        
+        winningWord = getNextWordArray()
+         
         while(i<6)
         {
             n = 0
@@ -210,69 +219,83 @@ struct ContentView: View {
         
         VStack(spacing: 30) {
             VStack(spacing: 10) {
+                
+                Text("Oh My Word!")
+                    .font(.system(size: 32))
+                    .fontWeight(.bold)
+                
+                Text("  ")
+                    .font(.system(size: 28))
+                
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[0].enumerated()), id: \.offset) { index, letter in
                             Text(letter)
-                                .font(.system(size: 18))
+                                .font(.system(size: 28))
                                 .frame(width: 60, height: 60)
                                 .background(color2D[0][index])
                                 .cornerRadius(10)
                                 .multilineTextAlignment(.center)
+                                .fontWeight(.bold)
                     }
                 }
         
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[1].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
-                            .font(.system(size: 18))
+                            .font(.system(size: 28))
                             .frame(width: 60, height: 60)
                             .background(color2D[1][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                            .fontWeight(.bold)
                     }
                 }
         
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[2].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
-                            .font(.system(size: 18))
+                            .font(.system(size: 28))
                             .frame(width: 60, height: 60)
                             .background(color2D[2][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                            .fontWeight(.bold)
                     }
                 }
         
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[3].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
-                            .font(.system(size: 18))
+                            .font(.system(size: 28))
                             .frame(width: 60, height: 60)
                             .background(color2D[3][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                            .fontWeight(.bold)
                     }
                 }
                 
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[4].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
-                            .font(.system(size: 18))
+                            .font(.system(size: 28))
                             .frame(width: 60, height: 60)
                             .background(color2D[4][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                            .fontWeight(.bold)
                     }
                 }
                 
                 LazyVGrid(columns: gridItemLayout, spacing: 5) {
                     ForEach(Array(letters2D[5].enumerated()), id: \.offset) { index, letter in
                         Text(letter)
-                            .font(.system(size: 18))
+                            .font(.system(size: 28))
                             .frame(width: 60, height: 60)
                             .background(color2D[5][index])
                             .cornerRadius(10)
                             .multilineTextAlignment(.center)
+                            .fontWeight(.bold)
                     }
                 }
             }
@@ -329,6 +352,7 @@ struct ContentView: View {
                     {
                         userWon = true
                         showAlert = true
+                        wonInTries = currentRow
                         resetGame()
                     }
                     else {
@@ -361,7 +385,8 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showAlert) {
             if (userWon) {
-                WinView()
+                let tries:String = String(wonInTries)
+                WinView(tries:tries)
             }
             else {
                 LoseView(winningWord: winningWord[0] + winningWord[1] + winningWord[2] + winningWord[3] +

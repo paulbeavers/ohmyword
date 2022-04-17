@@ -17,6 +17,6 @@ struct LoseView: View {
 
 struct LoseView_Previews: PreviewProvider {
     static var previews: some View {
-        LoseView(winningWord:"word")
+        LoseView(winningWord: "winningWord")
     }
 }

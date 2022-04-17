@@ -14,6 +14,7 @@
 		B27F5CFA280B9DE500C41ACF /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27F5CF9280B9DE500C41ACF /* ResultView.swift */; };
 		B27F5CFC280B9F9D00C41ACF /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27F5CFB280B9F9D00C41ACF /* WinView.swift */; };
 		B27F5CFE280B9FB800C41ACF /* LoseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27F5CFD280B9FB800C41ACF /* LoseView.swift */; };
+		B2E0D538280BAC0C009E13E2 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E0D537280BAC0C009E13E2 /* Util.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		B27F5CF9280B9DE500C41ACF /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		B27F5CFB280B9F9D00C41ACF /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		B27F5CFD280B9FB800C41ACF /* LoseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoseView.swift; sourceTree = "<group>"; };
+		B2E0D537280BAC0C009E13E2 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 		B20CD19328013324003DDC9F /* ohmyword */ = {
 			isa = PBXGroup;
 			children = (
+				B2E0D537280BAC0C009E13E2 /* Util.swift */,
 				B27F5CFB280B9F9D00C41ACF /* WinView.swift */,
 				B27F5CF9280B9DE500C41ACF /* ResultView.swift */,
 				B20CD19428013324003DDC9F /* ohmywordApp.swift */,
@@ -147,6 +150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B20CD19728013324003DDC9F /* ContentView.swift in Sources */,
+				B2E0D538280BAC0C009E13E2 /* Util.swift in Sources */,
 				B27F5CFC280B9F9D00C41ACF /* WinView.swift in Sources */,
 				B20CD19528013324003DDC9F /* ohmywordApp.swift in Sources */,
 				B27F5CFE280B9FB800C41ACF /* LoseView.swift in Sources */,
