@@ -10,7 +10,15 @@ import SwiftUI
 struct WinView: View {
     let tries: String
     var body: some View {
-        Text("You won! You guessed in \(tries)!")
+        Text("You won!")
+            .font(.system(size: 32))
+        
+        Text(" ")
+            .font(.system(size: 32))
+        
+        Text("You guessed in \(tries) attempts!")
+            .font(.system(size: 32))
+        
     }
 }
 

@@ -10,8 +10,14 @@ import SwiftUI
 struct LoseView: View {
     let winningWord: String
     var body: some View {
-        Text("You lost")
-        Text("The word was \(winningWord) " )
+        Text("You lost!")
+            .font(.system(size: 32))
+        
+        Text("  ")
+            .font(.system(size: 32))
+        
+        Text("The word was \(winningWord). " )
+            .font(.system(size: 32))
     }
 }
 
