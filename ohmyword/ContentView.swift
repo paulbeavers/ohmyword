@@ -7,8 +7,13 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
+    @State var showAlert = false
+    
+    @State var userWon = false
+    
+    var resetBoard = false
+    
     
     @State private var winningWord = ["A", "D", "I", "E", "U"]
     
@@ -143,14 +148,17 @@ struct ContentView: View {
     //-------------------------------------------------------
     // check word and set colors
     //-------------------------------------------------------
-    func checkWordAndSetColors() {
+    func checkWordAndSetColors() -> Int {
         var n:Int = 0
         var i:Int = 0
+        var greenCount:Int = 0
+        
         while(i<5)
         {
             if (letters2D[currentRow][i] == winningWord[i])
             {
                 color2D[currentRow][i] = Color.green
+                greenCount = greenCount + 1
             }
             i = i + 1
         }
@@ -166,6 +174,29 @@ struct ContentView: View {
                             color2D[currentRow][i] = Color.yellow
                         }
                     }
+                n = n + 1
+            }
+            i = i + 1
+        }
+        
+        return greenCount
+    }
+    
+    //-------------------------------------------------------
+    // Reset Game
+    //-------------------------------------------------------
+    func resetGame() {
+        var n:Int = 0
+        var i:Int = 0
+        currentRow = 0
+        currentColumn = 0
+        while(i<6)
+        {
+            n = 0
+            while(n<5)
+            {
+                letters2D[i][n] = " "
+                color2D[i][n] = Color.gray
                 n = n + 1
             }
             i = i + 1
@@ -285,23 +316,63 @@ struct ContentView: View {
         
             LazyVGrid(columns: controlButtonItemLayout, spacing: 10) {
                 Button("Enter") {
+                    var greenCount:Int = 0
+                    
                     if (currentColumn == 4)
                     {
-                        checkWordAndSetColors()
+                        greenCount = checkWordAndSetColors()
                         currentRow = currentRow + 1
                         currentColumn = 0
+                    }
+                    
+                    if (greenCount == 5)
+                    {
+                        userWon = true
+                        showAlert = true
+                        resetGame()
+                    }
+                    else {
+                        if (currentRow == 6) {
+                            userWon = false
+                            showAlert = true
+                            resetGame()
+                        }
                     }
                 }
                 .buttonStyle(ControlButtonStyle())
             
                 Button("Delete") {
+                    if (currentColumn > 0) {
+                        if (currentColumn != 4) {
+                            currentColumn = currentColumn - 1
+                        }
+                        else
+                        {
+                            if (letters2D[currentRow][currentColumn] == " ") {
+                                currentColumn = currentColumn - 1
+                            }
+                        }
+                    }
+                    letters2D[currentRow][currentColumn] = " "
               
                 }
                 .buttonStyle(ControlButtonStyle())
             }
         }
+        .sheet(isPresented: $showAlert) {
+            if (userWon) {
+                WinView()
+            }
+            else {
+                LoseView(winningWord: winningWord[0] + winningWord[1] + winningWord[2] + winningWord[3] +
+                         winningWord[4])
+            }
+        }
     }
 }
+    
+
+    
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
