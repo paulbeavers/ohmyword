@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var wonInTries:Int = 0
     
     @State private var winningWord = getNextWordArray() // ["A", "D", "I", "E", "U"]
+    @State private var wrongArray:[String] = ["", "", "", "", ""]
     
     @State private var bgColor:Color = Color.white
     
@@ -352,6 +353,7 @@ struct ContentView: View {
                     else {
                         if (currentRow == 6) {
                             userWon = false
+                            wrongArray = winningWord
                             showAlert = true
                             resetGame()
                         }
@@ -383,8 +385,8 @@ struct ContentView: View {
                 WinView(tries:tries)
             }
             else {
-                LoseView(winningWord: winningWord[0] + winningWord[1] + winningWord[2] + winningWord[3] +
-                         winningWord[4])
+                LoseView(winningWord: wrongArray[0] + wrongArray[1] + wrongArray[2] + wrongArray[3] +
+                         wrongArray[4])
             }
         }
     }
