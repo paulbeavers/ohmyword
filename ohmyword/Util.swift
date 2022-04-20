@@ -9,7 +9,8 @@ import Foundation
 
 var wordArray:[String] = ["HOUSE", "BOAST", "BOATS", "LOUSE", "ROAST",
     "HEIST", "FIEND", "FORAY", "ROYAL", "CLUES", "BLUES", "TOAST", "SCORE", "SCREW", "STEAM", "POUND",
-    "FOUND", "ROUND", "THREW", "PRINT", "PRIME", "QUIET", "QUEST", "STAIR", "STARE"]
+    "FOUND", "ROUND", "THREW", "PRINT", "PRIME", "QUIET", "QUEST", "STAIR", "STARE", "GROWN", "GROAN", "GRIEF", "ULTRA", "LIKES", "CLONE",
+    "SOUND", "HOUND", "MOVED"]
 
 func getNextWord() -> String {
     let number = arc4random_uniform(UInt32(wordArray.count))

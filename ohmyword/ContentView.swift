@@ -351,7 +351,7 @@ struct ContentView: View {
                 Button("Enter") {
                     var greenCount:Int = 0
                     
-                    if (currentColumn == 4)
+                    if (currentColumn == 4 && letters2D[currentRow][currentColumn] != " ")
                     {
                         greenCount = checkWordAndSetColors()
                         currentRow = currentRow + 1
