@@ -43,6 +43,7 @@ struct ContentView: View {
     
     @State private var currentRow = 0
     @State private var currentColumn = 0
+    @State private var checkGuessWord:Bool = true
     
     private var gridItemLayout = [GridItem(.fixed(60), spacing: 5), GridItem(.fixed(60), spacing: 5),
                                    GridItem(.fixed(60), spacing: 5), GridItem(.fixed(60), spacing: 5),
@@ -205,6 +206,98 @@ struct ContentView: View {
     }
     
     //-------------------------------------------------------
+    // SyncEnterHandler
+    //-------------------------------------------------------
+    func SyncEnterHandler() {
+        var greenCount:Int = 0
+        
+        if (currentColumn == 4 && letters2D[currentRow][currentColumn] != " ")
+        {
+            greenCount = checkWordAndSetColors()
+            currentRow = currentRow + 1
+            currentColumn = 0
+        }
+    
+        if (greenCount == 5)
+        {
+            userWon = true
+            timerSubscription = timer.connect()
+            wonInTries = currentRow
+        }
+        else {
+            if (currentRow == 6) {
+                userWon = false
+                wrongArray = winningWord
+                timerSubscription = timer.connect()
+            }
+        }
+        
+    }
+    
+    //-------------------------------------------------------
+    // ASyncEnterHandler
+    //-------------------------------------------------------
+    func AsyncEnterHandler() {
+        var greenCount:Int = 0
+        var foundWord:Bool = false
+        
+        let checkString:String = letters2D[currentRow][0] + letters2D[currentRow][1] + letters2D[currentRow][2] +
+        letters2D[currentRow][3] + letters2D[currentRow][4]
+        
+        guard let url = URL(string: "https://api.dictionaryapi.dev/api/v2/entries/en/" + checkString) else{
+            return
+        }
+
+        let group = DispatchGroup()
+        group.enter()
+        
+        let task = URLSession.shared.dataTask(with: url) {
+            data, response, error in defer { group.leave() }
+            
+            print(data ?? "default value")
+            print(response ?? "default respose")
+            
+            foundWord = false
+            if let httpResponse = response as? HTTPURLResponse {
+                print("statusCode: \(httpResponse.statusCode)")
+                
+                if (httpResponse.statusCode < 300) {
+                    foundWord = true
+                }
+            }
+        } // task
+
+        task.resume()
+        
+        group.notify(queue: .main) {
+            //print(myError)
+            
+            
+            if (foundWord) {
+                
+                greenCount = checkWordAndSetColors()
+                currentRow = currentRow + 1
+                currentColumn = 0
+            
+                if (greenCount == 5)
+                {
+                    userWon = true
+                    timerSubscription = timer.connect()
+                    wonInTries = currentRow
+                }
+                else {
+                    if (currentRow == 6) {
+                        userWon = false
+                        wrongArray = winningWord
+                        timerSubscription = timer.connect()
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    //-------------------------------------------------------
     // Reset Game
     //-------------------------------------------------------
     func resetGame() {
@@ -349,26 +442,15 @@ struct ContentView: View {
         
             LazyVGrid(columns: controlButtonItemLayout, spacing: 10) {
                 Button("Enter") {
-                    var greenCount:Int = 0
-                    
                     if (currentColumn == 4 && letters2D[currentRow][currentColumn] != " ")
                     {
-                        greenCount = checkWordAndSetColors()
-                        currentRow = currentRow + 1
-                        currentColumn = 0
-                    }
-                    
-                    if (greenCount == 5)
-                    {
-                        userWon = true
-                        timerSubscription = timer.connect()
-                        wonInTries = currentRow
-                    }
-                    else {
-                        if (currentRow == 6) {
-                            userWon = false
-                            wrongArray = winningWord
-                            timerSubscription = timer.connect()
+                        if (checkGuessWord)
+                        {
+                            AsyncEnterHandler()
+                        }
+                        else
+                        {
+                            SyncEnterHandler()
                         }
                     }
                 }

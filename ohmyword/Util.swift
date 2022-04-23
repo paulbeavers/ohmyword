@@ -39,3 +39,29 @@ func getNextWordArray() -> [String] {
     
     return winningWordArray
 }
+
+
+func callAPI(){
+    var data1 = "aaaa"
+    guard let url = URL(string: "https://api.dictionaryapi.dev/api/v2/entries/en/hello") else{
+        return
+    }
+
+    let group = DispatchGroup()
+
+    group.enter()
+    let task = URLSession.shared.dataTask(with: url){
+        data, response, error in defer { group.leave() }
+        
+        if let data = data, let string = String(data: data, encoding: .utf8){
+            data1 = string
+            print(string)
+        }
+    }
+
+    task.resume()
+    
+    group.notify(queue: .main) {
+            print(data1)
+        }
+}
